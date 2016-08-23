@@ -5,6 +5,11 @@ import tempfile
 
 __version__ = '0.1.2'
 
+
+FREEZE_DB = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), 'fake_useragent.json')
+
+
 DB = os.path.join(tempfile.gettempdir(), 'fake_useragent_{version}.json'.format(  # noqa
     version=__version__,
 ))

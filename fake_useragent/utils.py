@@ -15,6 +15,8 @@ except ImportError:  # Python 3
     from urllib.parse import quote_plus
     from urllib.error import URLError
 
+from . import exc
+
 
 def get(url):
     with get.lock:
@@ -27,9 +29,9 @@ def get(url):
 
             try:
                 return urlopen(request, timeout=settings.HTTP_TIMEOUT).read()
-            except URLError:
+            except URLError as err:
                 if attempt == settings.HTTP_RETRIES:
-                    raise
+                    raise exc.CacheDataCreationError(err)
                 else:
                     sleep(settings.HTTP_DELAY)
 get.lock = Lock()
@@ -112,8 +114,10 @@ def write(data):
         json.dump(data, fp)
 
 
-def read():
-    with codecs.open(settings.DB, encoding='utf-8', mode='rb',) as fp:
+def read(db=None):
+    if db is None:
+        db = settings.DB
+    with codecs.open(db, encoding='utf-8', mode='rb',) as fp:
         return json.load(fp)
 
 
@@ -138,6 +142,10 @@ def load_cached():
         update()
 
     return read()
+
+
+def load_freeze_db():
+    return read(settings.FREEZE_DB)
 
 
 from fake_useragent import settings  # noqa # isort:skip

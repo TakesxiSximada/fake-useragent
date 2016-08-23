@@ -57,6 +57,7 @@ setup(
     author_email='hellysmile@gmail.com',
     url='https://github.com/hellysmile/fake-useragent',
     zip_safe=False,
+    include_package_data=True,
     license='http://www.apache.org/licenses/LICENSE-2.0',
     classifiers=filter(None, classifiers.split('\n')),
     keywords=[
